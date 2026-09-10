@@ -6,7 +6,7 @@ import logoImg from "../assets/logos/logo.png";
 const navLinks = [
   { label: "Services", id: "services" },
   { label: "Work", id: "portfolio" },
-  { label: "Pricing", id: "pricing" },
+  { label: "Process", id: "process" },
   { label: "About", id: "about" },
   { label: "Contact", id: "contact" },
 ];

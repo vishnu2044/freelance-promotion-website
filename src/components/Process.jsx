@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from "react";
 import processSteps from "../data/process";
 import useReveal from "../hooks/useReveal";
 
@@ -10,11 +11,14 @@ export default function Process() {
         <div className="section-header reveal" ref={headerRef}>
           <span className="section-label">Process</span>
           <h2 className="section-title">How it works</h2>
+          <p className="section-subtitle">
+            A clear, proven workflow — from our first conversation to your site going live.
+          </p>
         </div>
 
-        <div className="process-steps">
-          {processSteps.map((step) => (
-            <ProcessStep key={step.number} step={step} />
+        <div className="process-cards">
+          {processSteps.map((step, i) => (
+            <ProcessCard key={step.number} step={step} index={i} />
           ))}
         </div>
       </div>
@@ -22,16 +26,54 @@ export default function Process() {
   );
 }
 
-function ProcessStep({ step }) {
-  const ref = useReveal();
+function ProcessCard({ step, index }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="process-step reveal" ref={ref}>
-      <div className="process-step-number" aria-hidden="true">
+    <div
+      className={`process-card${visible ? " visible" : ""}${hovered ? " hovered" : ""}`}
+      ref={ref}
+      style={{ transitionDelay: `${index * 110}ms` }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Accent line that grows on hover */}
+      <div className="process-card-accent" aria-hidden="true" />
+
+      {/* Step number badge */}
+      <div className="process-card-number" aria-hidden="true">
         {step.number}
       </div>
-      <h3 className="process-step-title">{step.title}</h3>
-      <p className="process-step-description">{step.description}</p>
+
+      {/* Content */}
+      <div className="process-card-content">
+        <h3 className="process-card-title">{step.title}</h3>
+        <p className="process-card-description">{step.description}</p>
+      </div>
+
+      {/* Tag at the bottom */}
+      <div className="process-card-tag">
+        <span className="process-card-tag-dot" aria-hidden="true" />
+        {step.tag}
+      </div>
     </div>
   );
 }

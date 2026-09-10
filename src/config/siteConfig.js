@@ -18,7 +18,7 @@ const siteConfig = {
 
   // Social Links — leave empty string to hide the icon
   social: {
-    instagram: "",
+    instagram: "insta",
     linkedin: "",
     github: "",
   },

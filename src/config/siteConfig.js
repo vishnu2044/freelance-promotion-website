@@ -13,7 +13,7 @@ const siteConfig = {
 
   // Contact
   email: "[YOUR EMAIL]",
-  whatsapp: "[YOUR WHATSAPP NUMBER]", // Include country code, e.g. "919876543210"
+  whatsapp: "919747152044", // India +91 prefix + number
   location: "[YOUR LOCATION]",
 
   // Social Links — leave empty string to hide the icon

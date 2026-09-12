@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { HiArrowUpRight } from "react-icons/hi2";
 import projects from "../data/projects";
 import useReveal from "../hooks/useReveal";
@@ -28,6 +29,12 @@ export default function Portfolio() {
               ))}
             </div>
           )}
+        </div>
+
+        <div className="section-view-more">
+          <Link to="/work" className="btn btn-secondary">
+            View All Work →
+          </Link>
         </div>
       </div>
     </section>

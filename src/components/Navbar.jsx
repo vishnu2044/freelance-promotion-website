@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import siteConfig from "../config/siteConfig";
 import { scrollToSection } from "../utils/helpers";
 import logoImg from "../assets/logos/logo.png";
@@ -14,6 +15,9 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -30,11 +34,25 @@ export default function Navbar() {
   const handleNav = useCallback(
     (id) => {
       setMobileOpen(false);
-      // Small delay so mobile menu closes before scrolling
-      setTimeout(() => scrollToSection(id), 100);
+      if (isHome) {
+        // Already on home — smooth scroll
+        setTimeout(() => scrollToSection(id), 100);
+      } else {
+        // Navigate to home with hash so the section is in view
+        navigate(`/#${id}`);
+      }
     },
-    []
+    [isHome, navigate]
   );
+
+  // After navigating to /#section from an inner page, scroll to the section
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.slice(1);
+      const timer = setTimeout(() => scrollToSection(id), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   return (
     <nav className={`navbar${scrolled ? " scrolled" : ""}`} role="navigation" aria-label="Main navigation">
@@ -42,8 +60,8 @@ export default function Navbar() {
         {/* Brand */}
         <button
           className="navbar-brand"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Scroll to top"
+          onClick={() => navigate("/")}
+          aria-label="Go to home"
           type="button"
         >
           <img

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { HiPaperAirplane } from "react-icons/hi2";
+import { HiPaperAirplane, HiOutlineEnvelope, HiOutlinePhone, HiOutlineUser, HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import { IoLogoWhatsapp } from "react-icons/io5";
-import { HiOutlineEnvelope } from "react-icons/hi2";
+import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
 import siteConfig from "../config/siteConfig";
 import { getWhatsAppUrl } from "../utils/helpers";
 import useReveal from "../hooks/useReveal";
@@ -18,6 +18,7 @@ const initialForm = {
   name: "",
   business: "",
   email: "",
+  phone: "",
   type: "",
   message: "",
 };
@@ -46,7 +47,6 @@ export default function Contact() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    // Clear error on change
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -66,7 +66,10 @@ export default function Contact() {
       formData.append("access_key", "0b214784-f5fa-4c9b-a25c-14f834d4fcc9");
       formData.append("name", form.name);
       formData.append("email", form.email);
-      formData.append("message", `Business: ${form.business || "N/A"}\nWebsite Type: ${form.type}\n\n${form.message}`);
+      formData.append(
+        "message",
+        `Business: ${form.business || "N/A"}\nPhone: ${form.phone || "N/A"}\nWebsite Type: ${form.type}\n\n${form.message}`
+      );
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -100,22 +103,34 @@ export default function Contact() {
               back to you with the next steps.
             </p>
 
-            <div className="contact-cta-buttons">
+            <div className="contact-info-cards">
               <a
                 href={getWhatsAppUrl()}
-                className="contact-cta-btn whatsapp"
+                className="contact-info-card whatsapp"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat on WhatsApp"
               >
-                <IoLogoWhatsapp /> Chat on WhatsApp
+                <div className="contact-info-card-icon">
+                  <IoLogoWhatsapp />
+                </div>
+                <div className="contact-info-card-text">
+                  <span className="contact-info-card-label">WhatsApp</span>
+                  <span className="contact-info-card-value">Chat instantly</span>
+                </div>
               </a>
               <a
                 href={`mailto:${siteConfig.email}`}
-                className="contact-cta-btn email"
+                className="contact-info-card email"
                 aria-label="Send an email"
               >
-                <HiOutlineEnvelope /> Send an Email
+                <div className="contact-info-card-icon">
+                  <HiOutlineEnvelope />
+                </div>
+                <div className="contact-info-card-text">
+                  <span className="contact-info-card-label">Email</span>
+                  <span className="contact-info-card-value">{siteConfig.email !== "[YOUR EMAIL]" ? siteConfig.email : "Send a message"}</span>
+                </div>
               </a>
             </div>
           </div>
@@ -124,14 +139,18 @@ export default function Contact() {
           <div className="reveal" ref={formRef}>
             {submitted ? (
               <div className="form-success" role="alert">
-                Thank you! Your enquiry has been received. I'll get back to you
-                soon.
+                <div className="form-success-icon">✓</div>
+                <h3>Enquiry received!</h3>
+                <p>Thank you! I'll review your message and get back to you as soon as possible.</p>
               </div>
             ) : (
               <form className="contact-form" onSubmit={handleSubmit} noValidate>
+                {/* Row 1: Name + Business */}
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="contact-name">Name *</label>
+                    <label htmlFor="contact-name">
+                      <HiOutlineUser aria-hidden="true" /> Name *
+                    </label>
                     <input
                       id="contact-name"
                       type="text"
@@ -149,7 +168,9 @@ export default function Contact() {
                     )}
                   </div>
                   <div className="form-group">
-                    <label htmlFor="contact-business">Business name</label>
+                    <label htmlFor="contact-business">
+                      <HiOutlineBuildingOffice2 aria-hidden="true" /> Business name
+                    </label>
                     <input
                       id="contact-business"
                       type="text"
@@ -161,25 +182,44 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="contact-email">Email *</label>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    aria-required="true"
-                    aria-invalid={!!errors.email}
-                  />
-                  {errors.email && (
-                    <span className="form-error" role="alert">
-                      {errors.email}
-                    </span>
-                  )}
+                {/* Row 2: Email + Phone */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="contact-email">
+                      <HiOutlineEnvelope aria-hidden="true" /> Email *
+                    </label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      name="email"
+                      placeholder="you@example.com"
+                      value={form.email}
+                      onChange={handleChange}
+                      aria-required="true"
+                      aria-invalid={!!errors.email}
+                    />
+                    {errors.email && (
+                      <span className="form-error" role="alert">
+                        {errors.email}
+                      </span>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="contact-phone">
+                      <HiOutlinePhone aria-hidden="true" /> Phone
+                    </label>
+                    <input
+                      id="contact-phone"
+                      type="tel"
+                      name="phone"
+                      placeholder="+91 00000 00000"
+                      value={form.phone}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
 
+                {/* Website type */}
                 <div className="form-group">
                   <label htmlFor="contact-type">
                     What type of website do you need? *
@@ -208,12 +248,15 @@ export default function Contact() {
                   )}
                 </div>
 
+                {/* Message */}
                 <div className="form-group">
-                  <label htmlFor="contact-message">Message</label>
+                  <label htmlFor="contact-message">
+                    <HiOutlineChatBubbleBottomCenterText aria-hidden="true" /> Message
+                  </label>
                   <textarea
                     id="contact-message"
                     name="message"
-                    placeholder="Tell me about your project..."
+                    placeholder="Tell me about your project, goals, timeline..."
                     rows="4"
                     value={form.message}
                     onChange={handleChange}
@@ -221,10 +264,11 @@ export default function Contact() {
                 </div>
 
                 {submitError && (
-                  <p className="form-error" role="alert" style={{ marginBottom: "8px" }}>
+                  <p className="form-error form-error--block" role="alert">
                     {submitError}
                   </p>
                 )}
+
                 <button
                   type="submit"
                   className="btn btn-primary form-submit"

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import services from "../data/services";
 import useReveal from "../hooks/useReveal";
 
@@ -21,6 +22,12 @@ export default function Services() {
           {services.map((service, i) => (
             <ServiceCard key={service.number} service={service} index={i} />
           ))}
+        </div>
+
+        <div className="section-view-more">
+          <Link to="/services" className="btn btn-secondary">
+            View All Services →
+          </Link>
         </div>
       </div>
     </section>

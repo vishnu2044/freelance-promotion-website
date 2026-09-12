@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import processSteps from "../data/process";
 import useReveal from "../hooks/useReveal";
 
@@ -20,6 +21,12 @@ export default function Process() {
           {processSteps.map((step, i) => (
             <ProcessCard key={step.number} step={step} index={i} />
           ))}
+        </div>
+
+        <div className="section-view-more">
+          <Link to="/process" className="btn btn-secondary">
+            See Full Process →
+          </Link>
         </div>
       </div>
     </section>

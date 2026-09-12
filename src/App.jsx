@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Services from "./components/Services";
-import Industries from "./components/Industries";
 import Portfolio from "./components/Portfolio";
 import Process from "./components/Process";
 import WhyMe from "./components/WhyMe";
@@ -33,7 +32,6 @@ function HomePage() {
     <main>
       <Hero />
       <Services />
-      <Industries />
       <Portfolio />
       <Process />
       <WhyMe />

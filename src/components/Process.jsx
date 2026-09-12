@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { HiArrowUpRight } from "react-icons/hi2";
 import processSteps from "../data/process";
 import useReveal from "../hooks/useReveal";
 
@@ -9,24 +10,20 @@ export default function Process() {
   return (
     <section className="section process" id="process">
       <div className="container">
-        <div className="section-header reveal" ref={headerRef}>
-          <span className="section-label">Process</span>
-          <h2 className="section-title">How it works</h2>
-          <p className="section-subtitle">
-            A clear, proven workflow — from our first conversation to your site going live.
-          </p>
+        <div className="section-header-row reveal" ref={headerRef}>
+          <div>
+            <span className="section-label">Process</span>
+            <h2 className="section-title">How it works</h2>
+          </div>
+          <Link to="/process" className="section-header-link">
+            See full process <HiArrowUpRight />
+          </Link>
         </div>
 
         <div className="process-cards">
           {processSteps.map((step, i) => (
             <ProcessCard key={step.number} step={step} index={i} />
           ))}
-        </div>
-
-        <div className="section-view-more">
-          <Link to="/process" className="btn btn-secondary">
-            See Full Process →
-          </Link>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { HiArrowLeft, HiArrowUpRight } from "react-icons/hi2";
+import { HiArrowLeft, HiArrowUpRight, HiCheckBadge } from "react-icons/hi2";
+import { HiOutlineUserGroup } from "react-icons/hi2";
 import projects from "../data/projects";
 import useReveal from "../hooks/useReveal";
 
@@ -18,22 +19,20 @@ export default function WorkPage() {
             <span className="section-label">Portfolio</span>
             <h1 className="page-hero-title">Selected Work</h1>
             <p className="page-hero-subtitle">
-              Real projects built for real businesses. Each one crafted with a focus on performance,
-              design, and delivering results for the client.
+              Real projects built for real businesses. Each one crafted with a
+              focus on performance, design, and delivering measurable results.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Projects Grid */}
+      {/* Projects */}
       <section className="section">
         <div className="container">
-          <div className="work-page-grid">
-            {projects.map((project) => (
-              <WorkCard key={project.id} project={project} />
+          <div className="work-page-list">
+            {projects.map((project, i) => (
+              <WorkCard key={project.id} project={project} index={i} />
             ))}
-            {/* Placeholder card encouraging more work */}
-            <ComingSoonCard />
           </div>
         </div>
       </section>
@@ -54,12 +53,17 @@ export default function WorkPage() {
   );
 }
 
-function WorkCard({ project }) {
+function WorkCard({ project, index }) {
   const ref = useReveal();
+  const isEven = index % 2 === 0;
 
   return (
-    <article className="work-page-card reveal" ref={ref}>
-      <div className="work-page-card-image">
+    <article
+      className={`work-detail-card reveal${isEven ? "" : " work-detail-card--reversed"}`}
+      ref={ref}
+    >
+      {/* Image */}
+      <div className="work-detail-card-image">
         {project.image ? (
           <img
             src={project.image}
@@ -70,7 +74,9 @@ function WorkCard({ project }) {
         ) : (
           <div
             className="project-placeholder"
-            style={{ background: `linear-gradient(135deg, ${project.color}22, ${project.color}08)` }}
+            style={{
+              background: `linear-gradient(135deg, ${project.color}22, ${project.color}08)`,
+            }}
           >
             <div className="project-placeholder-mockup">
               <div className="project-placeholder-toolbar">
@@ -87,35 +93,56 @@ function WorkCard({ project }) {
           </div>
         )}
       </div>
-      <div className="work-page-card-info">
-        <span className="project-card-category">{project.category}</span>
-        <h3 className="work-page-card-title">{project.title}</h3>
-        <p className="work-page-card-description">{project.description}</p>
+
+      {/* Info */}
+      <div className="work-detail-card-info">
+        <div className="work-detail-card-meta">
+          <span className="work-detail-card-number">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="project-card-category">{project.category}</span>
+        </div>
+
+        <h2 className="work-detail-card-title">{project.title}</h2>
+
+        {/* Target client */}
+        {project.targetClient && (
+          <div className="work-detail-client">
+            <HiOutlineUserGroup aria-hidden="true" />
+            <span>{project.targetClient}</span>
+          </div>
+        )}
+
+        {/* About the project */}
+        {project.about && (
+          <p className="work-detail-about">{project.about}</p>
+        )}
+
+        {/* Specialties */}
+        {project.specialties && project.specialties.length > 0 && (
+          <div className="work-detail-specialties">
+            <p className="work-detail-specialties-label">Key specialties</p>
+            <div className="work-detail-specialties-list">
+              {project.specialties.map((s) => (
+                <span key={s} className="work-detail-specialty">
+                  <HiCheckBadge aria-hidden="true" />
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* CTA */}
         <a
           href={project.url}
-          className="project-card-link"
+          className="btn btn-primary work-detail-cta"
           target={project.url !== "#" ? "_blank" : undefined}
           rel={project.url !== "#" ? "noopener noreferrer" : undefined}
-          aria-label={`View ${project.title} project`}
+          aria-label={`View ${project.title} live site`}
         >
           View Live Site <HiArrowUpRight />
         </a>
-      </div>
-    </article>
-  );
-}
-
-function ComingSoonCard() {
-  return (
-    <article className="work-page-card work-page-card--coming-soon">
-      <div className="work-coming-soon-inner">
-        <div className="work-coming-soon-dots" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-        <p className="work-coming-soon-text">More projects coming soon</p>
-        <Link to="/contact" className="btn btn-secondary" style={{ marginTop: "16px" }}>
-          Work With Me
-        </Link>
       </div>
     </article>
   );

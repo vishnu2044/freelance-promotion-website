@@ -6,70 +6,56 @@ import useReveal from "../hooks/useReveal";
 export default function Portfolio() {
   const headerRef = useReveal();
 
-  // First project is featured, rest are secondary
-  const [featured, ...rest] = projects;
+  // Show max 3 on home page
+  const preview = projects.slice(0, 3);
 
   return (
     <section className="section portfolio" id="portfolio">
       <div className="container">
-        <div className="section-header reveal" ref={headerRef}>
-          <span className="section-label">Portfolio</span>
-          <h2 className="section-title">Selected work</h2>
-          <p className="section-subtitle">
-            A featured project showcasing modern design, interactive storytelling, and fast performance.
-          </p>
-        </div>
-
-        <div className="portfolio-grid">
-          <ProjectCard project={featured} featured />
-          {rest.length > 0 && (
-            <div className="portfolio-grid-sub">
-              {rest.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="section-view-more">
-          <Link to="/work" className="btn btn-secondary">
-            View All Work →
+        {/* Header with inline "View All" link */}
+        <div className="section-header-row reveal" ref={headerRef}>
+          <div>
+            <span className="section-label">Portfolio</span>
+            <h2 className="section-title">Selected work</h2>
+          </div>
+          <Link to="/work" className="section-header-link">
+            View all work <HiArrowUpRight />
           </Link>
+        </div>
+
+        <div className="portfolio-home-grid">
+          {preview.map((project) => (
+            <HomeProjectCard key={project.id} project={project} />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function ProjectCard({ project, featured = false }) {
+function HomeProjectCard({ project }) {
   const ref = useReveal();
 
   return (
-    <article
-      className={`project-card reveal${featured ? " featured" : ""}`}
-      ref={ref}
-    >
-      <div className="project-card-image">
+    <article className="home-project-card reveal" ref={ref}>
+      <div className="home-project-card-image">
         {project.image ? (
           <img
             src={project.image}
             alt={`${project.title} — ${project.category} website`}
             loading="lazy"
             decoding="async"
-            width="800"
-            height="500"
           />
         ) : (
           <ProjectPlaceholder project={project} />
         )}
       </div>
-      <div className="project-card-info">
+      <div className="home-project-card-info">
         <span className="project-card-category">{project.category}</span>
-        <h3 className="project-card-title">{project.title}</h3>
-        <p className="project-card-description">{project.description}</p>
+        <h3 className="home-project-card-title">{project.title}</h3>
         <a
           href={project.url}
-          className="project-card-link"
+          className="home-project-card-link"
           target={project.url !== "#" ? "_blank" : undefined}
           rel={project.url !== "#" ? "noopener noreferrer" : undefined}
           aria-label={`View ${project.title} project`}

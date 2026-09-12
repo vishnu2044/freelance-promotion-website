@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { HiArrowUpRight } from "react-icons/hi2";
 import services from "../data/services";
 import useReveal from "../hooks/useReveal";
 
@@ -9,25 +10,20 @@ export default function Services() {
   return (
     <section className="section services" id="services">
       <div className="container">
-        <div className="section-header reveal" ref={ref}>
-          <span className="section-label">Services</span>
-          <h2 className="section-title">What I can build for you</h2>
-          <p className="section-subtitle">
-            Every project is scoped, designed, and built specifically around
-            your business goals and your customers.
-          </p>
+        <div className="section-header-row reveal" ref={ref}>
+          <div>
+            <span className="section-label">Services</span>
+            <h2 className="section-title">What I can build for you</h2>
+          </div>
+          <Link to="/services" className="section-header-link">
+            View all services <HiArrowUpRight />
+          </Link>
         </div>
 
         <div className="services-grid">
           {services.map((service, i) => (
             <ServiceCard key={service.number} service={service} index={i} />
           ))}
-        </div>
-
-        <div className="section-view-more">
-          <Link to="/services" className="btn btn-secondary">
-            View All Services →
-          </Link>
         </div>
       </div>
     </section>

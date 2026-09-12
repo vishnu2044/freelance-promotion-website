@@ -28,6 +28,8 @@ export default function Contact() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const validate = () => {
     const errs = {};
@@ -50,25 +52,38 @@ export default function Contact() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
 
-    if (Object.keys(errs).length === 0) {
-      /**
-       * TODO: Connect your form backend here.
-       * Options:
-       *   - Formspree: action="https://formspree.io/f/YOUR_ID" method="POST"
-       *   - Web3Forms: fetch("https://api.web3forms.com/submit", {...})
-       *   - EmailJS: emailjs.send(serviceID, templateID, form)
-       *   - Custom backend: fetch("/api/contact", {...})
-       *
-       * For now, we just log and show success.
-       */
-      console.log("Form submission:", form);
-      setSubmitted(true);
-      setForm(initialForm);
+    setLoading(true);
+    setSubmitError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("access_key", "0b214784-f5fa-4c9b-a25c-14f834d4fcc9");
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("message", `Business: ${form.business || "N/A"}\nWebsite Type: ${form.type}\n\n${form.message}`);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setForm(initialForm);
+      } else {
+        setSubmitError("Something went wrong. Please try again or reach out via WhatsApp.");
+      }
+    } catch {
+      setSubmitError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -205,11 +220,18 @@ export default function Contact() {
                   />
                 </div>
 
+                {submitError && (
+                  <p className="form-error" role="alert" style={{ marginBottom: "8px" }}>
+                    {submitError}
+                  </p>
+                )}
                 <button
                   type="submit"
                   className="btn btn-primary form-submit"
+                  disabled={loading}
+                  aria-disabled={loading}
                 >
-                  <HiPaperAirplane /> Send Enquiry
+                  <HiPaperAirplane /> {loading ? "Sending…" : "Send Enquiry"}
                 </button>
               </form>
             )}
